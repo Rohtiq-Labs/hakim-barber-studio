@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hakim Studio — Fades · Braids · Cuts · Cairo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Instrument+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #fafaf7;
+    --silver: #c8c8c8;
+    --silver-light: #e8e8e4;
+    --silver-dark: #a0a0a0;
+    --ink: #1c1c1a;
+    --ink-soft: #6a6a68;
+    --ink-faint: #b0b0ae;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── UTILITY ── */
+  .serif { font-family: 'Cormorant Garamond', serif; }
+  .label {
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--silver);
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 400;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: rgba(250,250,247,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--silver-light);
+    transition: padding 0.4s ease;
+  }
+
+  nav.scrolled { padding: 14px 24px; }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: none;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+
+  .nav-book {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--silver);
+    padding: 10px 20px;
+    text-decoration: none;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .nav-book:hover { background: var(--silver-dark); }
+
+  .nav-menu-btn {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .nav-menu-btn span {
+    display: block;
+    width: 22px;
+    height: 0.5px;
+    background: var(--ink);
+    transition: all 0.3s;
+  }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 99;
+    background: var(--white);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .mobile-menu a:hover { color: var(--silver); }
+
+  .mobile-menu-close {
+    position: absolute;
+    top: 20px; right: 24px;
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--ink-soft);
+    background: none;
+    border: none;
+    line-height: 1;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1400&q=80&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center 30%;
+    filter: grayscale(30%);
+    transform: scale(1.05);
+    animation: heroZoom 12s ease-out forwards;
+  }
+
+  @keyframes heroZoom {
+    to { transform: scale(1); }
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(250,250,247,0.15) 0%,
+      rgba(250,250,247,0.05) 40%,
+      rgba(250,250,247,0.6) 75%,
+      rgba(250,250,247,1) 100%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    padding: 0 24px 56px;
+    animation: fadeUp 1.2s ease 0.3s both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    margin-bottom: 16px;
+  }
+
+  .hero-h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(56px, 16vw, 110px);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 28px;
+  }
+
+  .hero-h1 em {
+    font-style: italic;
+    color: var(--silver-dark);
+  }
+
+  .hero-tagline {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.8;
+    max-width: 280px;
+    margin-bottom: 36px;
+    font-weight: 300;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .btn-fill {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--silver);
+    padding: 14px 32px;
+    text-decoration: none;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-fill:hover { background: var(--silver-dark); }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .btn-outline:hover { color: var(--ink); }
+
+  .btn-outline svg { width: 14px; height: 14px; transition: transform 0.2s; }
+  .btn-outline:hover svg { transform: translateX(3px); }
+
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    right: 24px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: fadeUp 1.2s ease 0.9s both;
+  }
+
+  .hero-scroll-hint span {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--silver);
+    writing-mode: vertical-rl;
+  }
+
+  .scroll-line {
+    width: 0.5px;
+    height: 48px;
+    background: var(--silver);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(0.6); }
+  }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    border-top: 0.5px solid var(--silver-light);
+    border-bottom: 0.5px solid var(--silver-light);
+    overflow: hidden;
+    padding: 13px 0;
+    background: var(--white);
+  }
+
+  .ticker-track {
+    display: flex;
+    gap: 0;
+    animation: ticker 28s linear infinite;
+    width: max-content;
+  }
+
+  .ticker-track:hover { animation-play-state: paused; }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 32px;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--silver);
+    white-space: nowrap;
+  }
+
+  .ticker-item b {
+    color: var(--ink);
+    font-weight: 400;
+    margin-right: 4px;
+  }
+
+  .ticker-dot {
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--silver-light);
+    margin-left: 32px;
+  }
+
+  /* ── ABOUT STRIP ── */
+  .about-strip {
+    padding: 64px 24px;
+    border-bottom: 0.5px solid var(--silver-light);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .about-strip .label { margin-bottom: 4px; }
+
+  .about-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 8vw, 48px);
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .about-quote em { font-style: italic; color: var(--silver-dark); }
+
+  .about-body {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.85;
+    max-width: 380px;
+    font-weight: 300;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 0.5px solid var(--silver-light);
+    margin-top: 8px;
+  }
+
+  .stat-cell {
+    padding: 20px 16px;
+    border-right: 0.5px solid var(--silver-light);
+  }
+
+  .stat-cell:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-lbl {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--silver);
+  }
+
+  /* ── SERVICES ── */
+  .services {
+    padding: 64px 24px;
+    border-bottom: 0.5px solid var(--silver-light);
+  }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 9vw, 52px);
+    font-weight: 300;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin-top: 8px;
+  }
+
+  .see-all {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--silver);
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+
+  .see-all:hover { color: var(--ink); }
+
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 0.5px solid var(--silver-light);
+  }
+
+  .service-row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 22px 0;
+    border-bottom: 0.5px solid var(--silver-light);
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .service-row:hover { padding-left: 8px; }
+
+  .service-row-num {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--silver);
+  }
+
+  .service-row-info { display: flex; flex-direction: column; gap: 4px; }
+
+  .service-row-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+
+  .service-row-desc {
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.05em;
+  }
+
+  .service-row-price {
+    font-size: 12px;
+    color: var(--silver-dark);
+    letter-spacing: 0.08em;
+    text-align: right;
+  }
+
+  /* ── GALLERY ── */
+  .gallery {
+    padding: 64px 24px;
+    border-bottom: 0.5px solid var(--silver-light);
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 220px 160px 220px;
+    gap: 3px;
+    margin-top: 36px;
+  }
+
+  .gallery-cell {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .gallery-cell.span-col {
+    grid-column: span 2;
+  }
+
+  .gallery-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(20%);
+    transition: transform 0.6s ease, filter 0.4s ease;
+    display: block;
+  }
+
+  .gallery-cell:hover img {
+    transform: scale(1.04);
+    filter: grayscale(0%);
+  }
+
+  .gallery-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--silver);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .gallery-link:hover { color: var(--ink); }
+
+  /* ── BOOKING ── */
+  .booking {
+    padding: 64px 24px;
+    border-bottom: 0.5px solid var(--silver-light);
+  }
+
+  .booking-intro {
+    margin-bottom: 40px;
+  }
+
+  .booking-intro p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.85;
+    max-width: 340px;
+    margin-top: 12px;
+    font-weight: 300;
+  }
+
+  .booking-form {
+    background: var(--silver-light);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .form-group label {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--silver-dark);
+  }
+
+  .form-group select,
+  .form-group input {
+    background: var(--white);
+    border: 0.5px solid var(--silver);
+    color: var(--ink);
+    padding: 13px 14px;
+    font-size: 13px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 300;
+    appearance: none;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group select:focus,
+  .form-group input:focus { border-color: var(--silver-dark); }
+
+  .time-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .time-chip {
+    background: var(--white);
+    border: 0.5px solid var(--silver);
+    padding: 11px 6px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-family: 'Instrument Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .time-chip:hover { border-color: var(--silver-dark); color: var(--ink); }
+
+  .time-chip.selected {
+    background: var(--silver);
+    border-color: var(--silver);
+    color: var(--white);
+  }
+
+  .btn-book-full {
+    width: 100%;
+    background: var(--ink);
+    color: var(--white);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    padding: 16px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 400;
+    transition: background 0.2s;
+  }
+
+  .btn-book-full:hover { background: #333; }
+
+  /* ── LOCATION ── */
+  .location {
+    padding: 64px 24px;
+    border-bottom: 0.5px solid var(--silver-light);
+  }
+
+  .location-map {
+    width: 100%;
+    height: 220px;
+    background: var(--silver-light);
+    margin-top: 32px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .location-map iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    filter: grayscale(100%) contrast(0.9);
+  }
+
+  .location-details {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 0.5px solid var(--silver-light);
+  }
+
+  .loc-cell {
+    padding: 20px 16px;
+    border-right: 0.5px solid var(--silver-light);
+    border-bottom: 0.5px solid var(--silver-light);
+  }
+
+  .loc-cell:nth-child(even) { border-right: none; }
+  .loc-cell:nth-child(3),
+  .loc-cell:nth-child(4) { border-bottom: none; }
+
+  .loc-label {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-bottom: 6px;
+  }
+
+  .loc-value {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 48px 24px 32px;
+    border-top: 0.5px solid var(--silver-light);
+  }
+
+  .footer-top {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding-bottom: 40px;
+    border-bottom: 0.5px solid var(--silver-light);
+  }
+
+  .footer-brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .footer-brand-sub {
+    font-size: 11px;
+    color: var(--silver);
+    letter-spacing: 0.15em;
+  }
+
+  .footer-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .footer-col-title {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-bottom: 14px;
+  }
+
+  .footer-col a {
+    display: block;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    margin-bottom: 10px;
+    font-weight: 300;
+    transition: color 0.2s;
+  }
+
+  .footer-col a:hover { color: var(--ink); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .footer-copy {
+    font-size: 10px;
+    color: var(--silver);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-social a {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--silver);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-social a:hover { color: var(--ink); }
+
+  /* ── DESKTOP ── */
+  @media (min-width: 768px) {
+    nav { padding: 24px 56px; }
+    nav.scrolled { padding: 16px 56px; }
+    .nav-links { display: flex; }
+    .nav-menu-btn { display: none; }
+
+    .hero-content { padding: 0 56px 72px; }
+
+    .hero-h1 { max-width: 700px; }
+
+    .about-strip {
+      padding: 80px 56px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .about-right { display: flex; flex-direction: column; gap: 32px; justify-content: flex-end; padding-top: 48px; }
+
+    .services { padding: 80px 56px; }
+    .gallery { padding: 80px 56px; }
+    .booking { padding: 80px 56px; }
+    .location { padding: 80px 56px; }
+    footer { padding: 64px 56px 40px; }
+
+    .gallery-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 280px 280px;
+      gap: 4px;
+    }
+
+    .gallery-cell.span-col {
+      grid-column: span 1;
+    }
+
+    .gallery-cell.tall {
+      grid-row: span 2;
+    }
+
+    .booking-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+    }
+
+    .footer-cols {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .location-map { height: 340px; }
+
+    .location-details {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .loc-cell:nth-child(even) { border-right: 0.5px solid var(--silver-light); }
+    .loc-cell:nth-child(3),
+    .loc-cell:nth-child(4) { border-bottom: none; }
+    .loc-cell:last-child { border-right: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-menu-close" id="menuClose">✕</button>
+  <a href="#services" onclick="closeMobileMenu()">Services</a>
+  <a href="#gallery" onclick="closeMobileMenu()">Gallery</a>
+  <a href="#booking" onclick="closeMobileMenu()">Book now</a>
+  <a href="#location" onclick="closeMobileMenu()">Find us</a>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">Hakim Studio</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#booking">Book now</a></li>
+    <li><a href="#location">Find us</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#booking" class="nav-book">Book now</a>
+    <button class="nav-menu-btn" id="menuBtn" aria-label="Open menu">
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="label hero-eyebrow">Cairo · Nasr City · Est. 2020</p>
+    <h1 class="hero-h1">The art<br>of the<br><em>perfect</em><br>cut.</h1>
+    <p class="hero-tagline">Precision fades, braids & cuts.<br>Where craft meets culture.</p>
+    <div class="hero-actions">
+      <a href="#booking" class="btn-fill">Book your seat</a>
+      <a href="#gallery" class="btn-outline">
+        View our work
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+          <line x1="2" y1="8" x2="13" y2="8"/>
+          <polyline points="8,3 13,8 8,13"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <!-- first set -->
+    <div class="ticker-item"><b>4,097</b> Followers<span class="ticker-dot"></span></div>
+    <div class="ticker-item"><b>Haircuts</b> · Fades · Braids<span class="ticker-dot"></span></div>
+    <div class="ticker-item">Nasr City, <b>Cairo</b><span class="ticker-dot"></span></div>
+    <div class="ticker-item">Mon–Sat &nbsp;<b>10am – 9pm</b><span class="ticker-dot"></span></div>
+    <div class="ticker-item">Book via <b>Fresha</b><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><b>Best Barber</b> in Egypt<span class="ticker-dot"></span></div>
+    <div class="ticker-item"><b>Premium</b> Service<span class="ticker-dot"></span></div>
+    <!-- duplicate for seamless loop -->
+    <div class="ticker-item"><b>4,097</b> Followers<span class="ticker-dot"></span></div>
+    <div class="ticker-item"><b>Haircuts</b> · Fades · Braids<span class="ticker-dot"></span></div>
+    <div class="ticker-item">Nasr City, <b>Cairo</b><span class="ticker-dot"></span></div>
+    <div class="ticker-item">Mon–Sat &nbsp;<b>10am – 9pm</b><span class="ticker-dot"></span></div>
+    <div class="ticker-item">Book via <b>Fresha</b><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><b>Best Barber</b> in Egypt<span class="ticker-dot"></span></div>
+    <div class="ticker-item"><b>Premium</b> Service<span class="ticker-dot"></span></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about-strip" id="about">
+  <div class="about-left">
+    <p class="label">Our story</p>
+    <h2 class="about-quote">Craft that<br>speaks for<br><em>itself.</em></h2>
+  </div>
+  <div class="about-right">
+    <p class="about-body">Hakim Studio is Cairo's premier destination for precision cuts, fades, and braids. Since 2020 we've built a space where artistry and attention to detail define every single appointment.</p>
+    <div class="about-stats">
+      <div class="stat-cell">
+        <div class="stat-num">4K+</div>
+        <div class="stat-lbl">Followers</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">174</div>
+        <div class="stat-lbl">Posts</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">5★</div>
+        <div class="stat-lbl">Rated</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-head">
+    <div>
+      <p class="label">What we do</p>
+      <h2 class="section-title">Services</h2>
+    </div>
+    <a href="#booking" class="see-all">Book ↗</a>
+  </div>
+  <div class="services-list">
+    <a class="service-row" href="#booking">
+      <span class="service-row-num">01</span>
+      <div class="service-row-info">
+        <span class="service-row-name">Classic fade</span>
+        <span class="service-row-desc">Skin · Low · Mid · High</span>
+      </div>
+      <span class="service-row-price">From 250 EGP<br><span style="font-size:10px;color:var(--silver)">45 min</span></span>
+    </a>
+    <a class="service-row" href="#booking">
+      <span class="service-row-num">02</span>
+      <div class="service-row-info">
+        <span class="service-row-name">Braids & cornrows</span>
+        <span class="service-row-desc">All styles · All lengths</span>
+      </div>
+      <span class="service-row-price">From 400 EGP<br><span style="font-size:10px;color:var(--silver)">90 min</span></span>
+    </a>
+    <a class="service-row" href="#booking">
+      <span class="service-row-num">03</span>
+      <div class="service-row-info">
+        <span class="service-row-name">Beard sculpt</span>
+        <span class="service-row-desc">Shape · Define · Hot towel</span>
+      </div>
+      <span class="service-row-price">From 150 EGP<br><span style="font-size:10px;color:var(--silver)">30 min</span></span>
+    </a>
+    <a class="service-row" href="#booking">
+      <span class="service-row-num">04</span>
+      <div class="service-row-info">
+        <span class="service-row-name">Full package</span>
+        <span class="service-row-desc">Cut + Beard + Wash</span>
+      </div>
+      <span class="service-row-price">From 550 EGP<br><span style="font-size:10px;color:var(--silver)">90 min</span></span>
+    </a>
+    <a class="service-row" href="#booking">
+      <span class="service-row-num">05</span>
+      <div class="service-row-info">
+        <span class="service-row-name">Kids cut</span>
+        <span class="service-row-desc">Under 12 · Gentle finish</span>
+      </div>
+      <span class="service-row-price">From 180 EGP<br><span style="font-size:10px;color:var(--silver)">30 min</span></span>
+    </a>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+  <div class="section-head">
+    <div>
+      <p class="label">Our work</p>
+      <h2 class="section-title">Gallery</h2>
+    </div>
+    <a href="https://instagram.com/hakim.studio" target="_blank" class="see-all">Instagram ↗</a>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-cell tall">
+      <img src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=800&q=80&auto=format&fit=crop" alt="Fade cut">
+    </div>
+    <div class="gallery-cell">
+      <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=600&q=80&auto=format&fit=crop" alt="Barber at work">
+    </div>
+    <div class="gallery-cell">
+      <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&q=80&auto=format&fit=crop" alt="Haircut">
+    </div>
+    <div class="gallery-cell span-col">
+      <img src="https://images.unsplash.com/photo-1521490683712-35a1cb235d1c?w=1000&q=80&auto=format&fit=crop" alt="Barber shop interior">
+    </div>
+  </div>
+  <a href="https://instagram.com/hakim.studio" target="_blank" class="gallery-link">
+    View more on @hakim.studio
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2">
+      <line x1="2" y1="8" x2="13" y2="8"/>
+      <polyline points="8,3 13,8 8,13"/>
+    </svg>
+  </a>
+</section>
+
+<!-- BOOKING -->
+<section class="booking" id="booking">
+  <div class="booking-inner">
+    <div class="booking-intro">
+      <p class="label">Reserve your chair</p>
+      <h2 class="section-title">Book a<br>session</h2>
+      <p>Select your service and a time that works. We'll confirm your seat instantly via Fresha.</p>
+    </div>
+    <div class="booking-form">
+      <div class="form-group">
+        <label for="svc">Service</label>
+        <select id="svc">
+          <option value="">Select a service</option>
+          <option>Classic fade — from 250 EGP</option>
+          <option>Braids & cornrows — from 400 EGP</option>
+          <option>Beard sculpt — from 150 EGP</option>
+          <option>Full package — from 550 EGP</option>
+          <option>Kids cut — from 180 EGP</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="fname">Your name</label>
+        <input type="text" id="fname" placeholder="Ahmed Hassan">
+      </div>
+      <div class="form-group">
+        <label>Available times — Today</label>
+        <div class="time-grid">
+          <div class="time-chip" onclick="selectTime(this)">10:00</div>
+          <div class="time-chip" onclick="selectTime(this)">11:30</div>
+          <div class="time-chip selected" onclick="selectTime(this)">13:00</div>
+          <div class="time-chip" onclick="selectTime(this)">14:30</div>
+          <div class="time-chip" onclick="selectTime(this)">16:00</div>
+          <div class="time-chip" onclick="selectTime(this)">17:30</div>
+        </div>
+      </div>
+      <button class="btn-book-full" onclick="window.open('https://www.fresha.com/p/hakim-almasry-55387367','_blank')">
+        Confirm booking ↗
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section class="location" id="location">
+  <div class="section-head">
+    <div>
+      <p class="label">Come visit</p>
+      <h2 class="section-title">Find us</h2>
+    </div>
+  </div>
+  <div class="location-map">
+    <iframe
+      src="https://maps.google.com/maps?q=Nasr+City+Cairo+Egypt&z=14&output=embed"
+      loading="lazy"
+      title="Hakim Studio location">
+    </iframe>
+  </div>
+  <div class="location-details">
+    <div class="loc-cell">
+      <div class="loc-label">Address</div>
+      <div class="loc-value">Nasr City<br>Cairo, Egypt</div>
+    </div>
+    <div class="loc-cell">
+      <div class="loc-label">Hours</div>
+      <div class="loc-value">Mon – Sat<br>10am – 9pm</div>
+    </div>
+    <div class="loc-cell">
+      <div class="loc-label">Phone</div>
+      <div class="loc-value"><a href="tel:" style="color:var(--ink-soft);text-decoration:none;">Add number</a></div>
+    </div>
+    <div class="loc-cell">
+      <div class="loc-label">Instagram</div>
+      <div class="loc-value"><a href="https://instagram.com/hakim.studio" target="_blank" style="color:var(--ink-soft);text-decoration:none;">@hakim.studio</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-name">Hakim Studio</div>
+      <div class="footer-brand-sub">Fades · Braids · Cuts · Cairo</div>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <div class="footer-col-title">Navigate</div>
+        <a href="#services">Services</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#booking">Book now</a>
+        <a href="#location">Find us</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Connect</div>
+        <a href="https://instagram.com/hakim.studio" target="_blank">Instagram</a>
+        <a href="https://wa.me/" target="_blank">WhatsApp</a>
+        <a href="https://www.fresha.com/p/hakim-almasry-55387367" target="_blank">Fresha</a>
+        <a href="https://maps.app.goo.gl/b7fPer68idX1onWt77g" target="_blank">Google Maps</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Hakim Studio · Cairo</span>
+    <div class="footer-social">
+      <a href="https://instagram.com/hakim.studio" target="_blank">IG</a>
+      <a href="https://wa.me/" target="_blank">WA</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  document.getElementById('menuBtn').addEventListener('click', () => {
+    document.getElementById('mobileMenu').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+
+  document.getElementById('menuClose').addEventListener('click', closeMobileMenu);
+
+  function closeMobileMenu() {
+    document.getElementById('mobileMenu').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function selectTime(el) {
+    document.querySelectorAll('.time-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+</script>
+</body>
+</html>
