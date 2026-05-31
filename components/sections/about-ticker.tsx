@@ -1,23 +1,26 @@
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { TICKER_ITEMS } from "@/data/site-data";
 
 export const TickerSection = () => (
-  <div className="ticker-wrap">
-    <div className="ticker-track">
-      {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, index) => (
-        <div className="ticker-item" key={`${item.bold}-${index}`}>
-          {item.before}
-          <b>{item.bold}</b>
-          {item.after}
-          <span className="ticker-dot" />
-        </div>
-      ))}
+  <ScrollReveal variant="in">
+    <div className="ticker-wrap">
+      <div className="ticker-track">
+        {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, index) => (
+          <div className="ticker-item" key={`${item.bold}-${index}`}>
+            {item.before}
+            <b>{item.bold}</b>
+            {item.after}
+            <span className="ticker-dot" />
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
+  </ScrollReveal>
 );
 
 export const AboutSection = () => (
   <section className="about-strip" id="about">
-    <div className="about-left">
+    <ScrollReveal className="about-left" variant="left">
       <p className="label">Our story</p>
       <h2 className="about-quote">
         Craft that
@@ -26,8 +29,8 @@ export const AboutSection = () => (
         <br />
         <em>itself.</em>
       </h2>
-    </div>
-    <div className="about-right">
+    </ScrollReveal>
+    <ScrollReveal className="about-right" variant="right" delay={120}>
       <p className="about-body">
         Hakim Studio is Cairo&apos;s premier destination for precision cuts,
         fades, and braids. Since 2020 we&apos;ve built a space where artistry
@@ -47,6 +50,6 @@ export const AboutSection = () => (
           <div className="stat-lbl">Rated</div>
         </div>
       </div>
-    </div>
+    </ScrollReveal>
   </section>
 );

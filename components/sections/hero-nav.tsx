@@ -48,6 +48,25 @@ export const MainNav = () => {
   const closeMenu = () => setMenuOpen(false);
   const toggleMenu = () => setMenuOpen((open) => !open);
 
+  const handleAnchorClick =
+    (href: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+      if (!menuOpen) {
+        return;
+      }
+
+      event.preventDefault();
+      closeMenu();
+
+      window.setTimeout(() => {
+        if (href === "#") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
+
+        document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
+      }, 150);
+    };
+
   return (
     <>
       <div
@@ -56,14 +75,18 @@ export const MainNav = () => {
         aria-hidden={!menuOpen}
       >
         {NAV_LINKS.map((link) => (
-          <a key={link.href} href={link.href} onClick={closeMenu}>
+          <a
+            key={link.href}
+            href={link.href}
+            onClick={handleAnchorClick(link.href)}
+          >
             {link.label}
           </a>
         ))}
       </div>
 
       <nav id="mainNav" className={`${scrolled ? "scrolled" : ""}${menuOpen ? " menu-open" : ""}`}>
-        <a href="#" className="nav-logo">
+        <a href="#" className="nav-logo" onClick={handleAnchorClick("#")}>
           Hakim Studio
         </a>
         <ul className="nav-links">
@@ -74,7 +97,11 @@ export const MainNav = () => {
           ))}
         </ul>
         <div className="nav-right">
-          <a href="#booking" className="nav-book">
+          <a
+            href="#booking"
+            className="nav-book"
+            onClick={handleAnchorClick("#booking")}
+          >
             Book now
           </a>
           <button

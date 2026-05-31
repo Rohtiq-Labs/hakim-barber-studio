@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ScrollReveal } from "@/components/scroll-reveal";
 import {
   BOOKING_SERVICES,
   BOOKING_TIMES,
@@ -13,7 +14,7 @@ export const BookingSection = () => {
   return (
     <section className="booking" id="booking">
       <div className="booking-inner">
-        <div className="booking-intro">
+        <ScrollReveal className="booking-intro" variant="left">
           <p className="label">Reserve your chair</p>
           <h2 className="section-title">
             Book a
@@ -24,8 +25,8 @@ export const BookingSection = () => {
             Select your service and a time that works. We&apos;ll confirm your
             seat instantly via Fresha.
           </p>
-        </div>
-        <div className="booking-form">
+        </ScrollReveal>
+        <ScrollReveal className="booking-form" delay={120} variant="right">
           <div className="form-group">
             <label htmlFor="svc">Service</label>
             <select id="svc" defaultValue="">
@@ -61,7 +62,7 @@ export const BookingSection = () => {
           >
             Confirm booking ↗
           </button>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

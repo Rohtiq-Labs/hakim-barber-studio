@@ -1,3 +1,4 @@
+import { ScrollReveal } from "@/components/scroll-reveal";
 import {
   FADEZY_URL,
   FRESHA_URL,
@@ -13,13 +14,13 @@ import {
 
 export const LocationSection = () => (
   <section className="location" id="location">
-    <div className="section-head">
+    <ScrollReveal className="section-head">
       <div>
         <p className="label">Come visit</p>
         <h2 className="section-title">Find us</h2>
       </div>
-    </div>
-    <div className="location-map">
+    </ScrollReveal>
+    <ScrollReveal className="location-map" delay={100} variant="in">
       <iframe
         src={MAP_EMBED_URL}
         loading="lazy"
@@ -27,8 +28,8 @@ export const LocationSection = () => (
         title={`Hakim Studio — ${STUDIO_ADDRESS.line1}`}
         referrerPolicy="no-referrer-when-downgrade"
       />
-    </div>
-    <div className="location-details">
+    </ScrollReveal>
+    <ScrollReveal className="location-details" delay={180}>
       <div className="loc-cell">
         <div className="loc-label">Address</div>
         <div className="loc-value">
@@ -61,13 +62,13 @@ export const LocationSection = () => (
           </a>
         </div>
       </div>
-    </div>
+    </ScrollReveal>
   </section>
 );
 
 export const FooterSection = () => (
   <footer>
-    <div className="footer-top">
+    <ScrollReveal className="footer-top">
       <div>
         <div className="footer-brand-name">Hakim Studio</div>
         <div className="footer-brand-sub">Fades · Braids · Cuts · Cairo</div>
@@ -97,8 +98,8 @@ export const FooterSection = () => (
           </a>
         </div>
       </div>
-    </div>
-    <div className="footer-bottom">
+    </ScrollReveal>
+    <ScrollReveal className="footer-bottom" delay={120} variant="in">
       <p className="footer-copy">
         © 2026 Hakim Barber Studio, Powered By{" "}
         <a href={FADEZY_URL} target="_blank" rel="noopener noreferrer">
@@ -114,6 +115,6 @@ export const FooterSection = () => (
           WA
         </a>
       </div>
-    </div>
+    </ScrollReveal>
   </footer>
 );

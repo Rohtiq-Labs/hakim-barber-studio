@@ -1,8 +1,9 @@
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { GALLERY_VIDEOS, INSTAGRAM_URL, SERVICES } from "@/data/site-data";
 
 export const ServicesSection = () => (
   <section className="services" id="services">
-    <div className="section-head">
+    <ScrollReveal className="section-head">
       <div>
         <p className="label">What we do</p>
         <h2 className="section-title">Services</h2>
@@ -10,21 +11,23 @@ export const ServicesSection = () => (
       <a href="#booking" className="see-all">
         Book ↗
       </a>
-    </div>
+    </ScrollReveal>
     <div className="services-list">
-      {SERVICES.map((service) => (
-        <a className="service-row" href="#booking" key={service.num}>
-          <span className="service-row-num">{service.num}</span>
-          <div className="service-row-info">
-            <span className="service-row-name">{service.name}</span>
-            <span className="service-row-desc">{service.desc}</span>
-          </div>
-          <span className="service-row-price">
-            {service.price}
-            <br />
-            <span className="service-row-duration">{service.duration}</span>
-          </span>
-        </a>
+      {SERVICES.map((service, index) => (
+        <ScrollReveal key={service.num} delay={index * 70}>
+          <a className="service-row" href="#booking">
+            <span className="service-row-num">{service.num}</span>
+            <div className="service-row-info">
+              <span className="service-row-name">{service.name}</span>
+              <span className="service-row-desc">{service.desc}</span>
+            </div>
+            <span className="service-row-price">
+              {service.price}
+              <br />
+              <span className="service-row-duration">{service.duration}</span>
+            </span>
+          </a>
+        </ScrollReveal>
       ))}
     </div>
   </section>
@@ -39,7 +42,7 @@ const ArrowIcon = () => (
 
 export const GallerySection = () => (
   <section className="gallery" id="gallery">
-    <div className="section-head">
+    <ScrollReveal className="section-head">
       <div>
         <p className="label">Our work</p>
         <h2 className="section-title">Gallery</h2>
@@ -47,10 +50,15 @@ export const GallerySection = () => (
       <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="see-all">
         Instagram ↗
       </a>
-    </div>
+    </ScrollReveal>
     <div className="gallery-grid">
-      {GALLERY_VIDEOS.map((video) => (
-        <div className={`gallery-cell ${video.className}`.trim()} key={video.src}>
+      {GALLERY_VIDEOS.map((video, index) => (
+        <ScrollReveal
+          className={`gallery-cell ${video.className}`.trim()}
+          delay={index * 90}
+          key={video.src}
+          variant="in"
+        >
           <video
             autoPlay
             muted
@@ -61,17 +69,19 @@ export const GallerySection = () => (
           >
             <source src={video.src} type="video/mp4" />
           </video>
-        </div>
+        </ScrollReveal>
       ))}
     </div>
-    <a
-      href={INSTAGRAM_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="gallery-link"
-    >
-      View more on @hakim.studio
-      <ArrowIcon />
-    </a>
+    <ScrollReveal delay={450}>
+      <a
+        href={INSTAGRAM_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="gallery-link"
+      >
+        View more on @hakim.studio
+        <ArrowIcon />
+      </a>
+    </ScrollReveal>
   </section>
 );
